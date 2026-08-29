@@ -26,12 +26,22 @@ module FA_Gate(
   output sum,
   output cout
 );
+
   wire ps, pc1, pc2;
 
-  xor (ps,  a,   b);
-  and (pc1, a,   b);
-  xor (sum, cin, ps);
-  and (pc2, cin, ps);
-  or  (cout, pc1, pc2);
+  // XOR of a and b
+  xor #(2) (ps, a, b);
+
+  // a AND b
+  and #(2) (pc1, a, b);
+
+  // Sum = (a XOR b) XOR cin
+  xor #(2) (sum, cin, ps);
+
+  // cin AND (a XOR b)
+  and #(2) (pc2, cin, ps);
+
+  // Carry = ab + cin(a XOR b)
+  or #(2) (cout, pc1, pc2);
 
 endmodule
